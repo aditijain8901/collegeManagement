@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".addFacultyActivity"
+    android:background="@drawable/background">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Faculty"
+            android:textSize="40dp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:paddingTop="30dp"
+            android:textStyle="bold"
+            android:layout_marginLeft="5dp" />
+
+        <EditText
+            android:id="@+id/faculty_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:hint="Name"
+            android:background="@android:drawable/editbox_background"/>
+
+        <EditText
+            android:id="@+id/faculty_user"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:hint="Username"
+            android:background="@android:drawable/editbox_background"/>
+        <EditText
+            android:id="@+id/faculty_pass"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:hint="Password"
+            android:background="@android:drawable/editbox_background"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="true">
+            <AutoCompleteTextView
+                android:id="@+id/course_faculty"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_weight="10"
+                android:ems="10"
+                android:inputType="none"
+                android:hint="Select Course"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:editable="false"
+                android:background="@android:drawable/editbox_background">
+
+            </AutoCompleteTextView>
+            <ImageView
+                android:id="@+id/arrow_down"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="40"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="50dp"
+                android:src="@mipmap/arrow_drop_down"/>
+        </LinearLayout>
+        <EditText
+            android:id="@+id/typeuser_faculty"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:text="Faculty"
+            android:editable="false"
+            android:background="@android:drawable/editbox_background"/>
+        <Button
+            android:id="@+id/faculty_submit"
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginRight="80dp"
+            android:padding="12dp"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:text="Submit"
+            android:textSize="15dp"/>
+    </LinearLayout>
+
+</ScrollView>
