@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -18,11 +19,17 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+    
     EditText username, password;
     Button login;
     LinearLayout linearLayout;
@@ -70,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setTitle("Authenticating...");
         progressDialog.setMessage("Loading");
-      //  progressDialog.show();
+        progressDialog.show();
 
         String user = username.getText().toString();
         String pass = password.getText().toString();
@@ -86,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                                 if (document!=null) {
                                     if (document.exists()) {
                                         String user_check = document.getString("username");
-                                      //  constants constants = document.toObject(com.example.attendance.constants.class);
                                         if (user.equals(user_check)) {
                                             Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
@@ -94,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                         else {
                                             Toast.makeText(MainActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
-                                         //   progressDialog.dismiss();
+                                            progressDialog.dismiss();
                                             onLoginFailed();
                                         }
                                     }else {
                                         Toast.makeText(MainActivity.this, "This User is not registered", Toast.LENGTH_SHORT).show();
-                                     //   progressDialog.dismiss();
+                                        progressDialog.dismiss();
                                         onLoginFailed();
                                     }
                                 }
@@ -116,55 +122,74 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     Toast.makeText(MainActivity.this, "Try Again Later", Toast.LENGTH_SHORT).show();
-                  //  progressDialog.dismiss();
+                    progressDialog.dismiss();
                     onLoginFailed();
                 }
             });
         }
-        else if (loginas.getText().toString().equals("Faculty")) {
-            db.collection("Admin").document().get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        if (loginas.getText().toString().equals("Faculty")) {
+            db.collection("Faculty").whereEqualTo("username", user).get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document!=null) {
-                                    if (document.exists()) {
-                                        String uer_check = document.getString("username");
-                                        //  constants constants = document.toObject(com.example.attendance.constants.class);
-                                        if (user.equals(uer_check)) {
-                                            Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                            progressDialog.dismiss();
-                                            onLoginSuccess();
-                                        }
-                                        else {
-                                            Toast.makeText(MainActivity.this, "Incorrect Credentials", Toast.LENGTH_SHORT).show();
-                                            //   progressDialog.dismiss();
-                                            onLoginFailed();
-                                        }
-                                    }else {
-                                        Toast.makeText(MainActivity.this, "This User is not registered", Toast.LENGTH_SHORT).show();
-                                        //   progressDialog.dismiss();
-                                        onLoginFailed();
-                                    }
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
+                            if (snapshotList!=null) {
+                                for (DocumentSnapshot snapshot : snapshotList) {
+                                    progressDialog.dismiss();
+                                    onLoginSuccess();
                                 }
                             }
+                            else {
+                                progressDialog.dismiss();
+                                onLoginFailed();
+                            }
                         }
-                    }).addOnCanceledListener(new OnCanceledListener() {
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, "Try Again Later", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            onLoginFailed();
+                        }
+                    })
+            .addOnCanceledListener(new OnCanceledListener() {
                 @Override
                 public void onCanceled() {
                     Toast.makeText(MainActivity.this, "Check Internet Connection ", Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                     onLoginFailed();
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, "Try Again Later", Toast.LENGTH_SHORT).show();
-                    //  progressDialog.dismiss();
-                    onLoginFailed();
-                }
             });
+        }
+        if (loginas.getText().toString().equals("Student")) {
+            db.collection("Students").whereEqualTo("username", user).get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            List<DocumentSnapshot> snapshotList = queryDocumentSnapshots.getDocuments();
+                            for (DocumentSnapshot snapshot: snapshotList) {
+                                progressDialog.dismiss();
+                                onLoginSuccess();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, "Try Again Later", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            onLoginFailed();
+                        }
+                    })
+                    .addOnCanceledListener(new OnCanceledListener() {
+                        @Override
+                        public void onCanceled() {
+                            Toast.makeText(MainActivity.this, "Check Internet Connection ", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            onLoginFailed();
+                        }
+                    });
         }
 
     }
